@@ -14,7 +14,7 @@
       </div>
       <div>
         <div class="input-append">
-          <input class="span10" id="appendedDropdownButton" type="text">
+          <input class="span10" id="query" name="query" type="text">
           <div class="btn-group">
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               Quick Search
@@ -25,7 +25,7 @@
             </ul>
           </div>
         </div>
-        <button class="btn btn-large btn-primary">Go</button>
+        <button class="btn btn-large btn-primary" id="btn-go">Go</button>
       </div>
       <div>
         <div class="container-fluid" id="content-container">
@@ -37,6 +37,7 @@
                 </li>
                 <li><a href="#">XML</a></li>
               </ul>
+              <div id="text-result">Waiting for results...</div>
             </div>
             <div class="span5">Hint</div>
           </div>
@@ -45,5 +46,26 @@
     </div>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+      var fieldQ = $('#query'),
+          btnGo = $('#btn-go'),
+          resultText = $('#text-result');
+
+      btnGo.click(function(e) {
+        var query = fieldQ.val().trim();
+        if (!query) return;
+        $.ajax({
+          url: '/sedna/query.php',
+          type: 'POST',
+          data: { 'query':query },
+          dataType: 'text',
+          success: function(result) {
+            resultText.html(result);
+          }
+        });
+      })
+    });
+    </script>
   </body>
 </html>
