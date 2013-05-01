@@ -2,17 +2,18 @@ var http = require('http'),
 	querystring = require('querystring'),
 	urlParser = require('url').parse,
 	paths = [
-		'/sedna/query.php',
-		'/sedna/query4.php'
-		// '/sedna/query7.php',
-		// '/sedna/query10.php'
+		'/sedna/query1.php',
+		'/sedna/query4.php',
+		'/sedna/query7.php',
+		'/sedna/query10.php',
+		'/sedna/query11.php'
 	],
 	opts = [];
 
 //init all opts
 for (var i = 0, len = paths.length; i < len; i++) {
 	opts.push({
-		host: '158.132.204.135',
+		host: 'localhost',
 		port: 80,
 		path: paths[i],
 		method: 'POST',
@@ -30,20 +31,24 @@ var server = http.createServer(function(sReq, sRes) {
 			data = querystring.stringify({
 				'query': query
 			});
-
+console.log(query);
 		//lauch all requests
 		for (var i = 0, len = opts.length; i < len; i++) {
-			var req = http.request(opts[i], function(res) {
-				res.setEncoding('utf-8');
-				res.on('data', function(data) {
-					dataReturnedCount++;
-					if (data.substring(0, 5) == '<page') {
-						sRes.end(data);
-					} else if (dataReturnedCount == len) {
-						sRes.end('No results.');
-					}
-				});
-			});
+			var req = http.request(opts[i], (function(i) {
+				return function(res) {
+					res.setEncoding('utf-8');
+					res.on('data', function(data) {
+						dataReturnedCount++;
+						if (data.substring(0, 5) == '<page') {
+							console.log(i);
+							sRes.end(data);
+						} else if (dataReturnedCount == len) {
+							sRes.end('No results.');
+						}
+					});
+				};
+				})(i)
+			);
 			req.write(data);
 			req.end();
 		}

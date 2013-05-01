@@ -14,7 +14,7 @@
       </div>
       <div>
         <div class="input-append">
-          <input class="span10" value="Anarchism" id="query" name="query" type="text" placeholder="Text keywords (e.g. Anarchism)">
+          <input class="span10" value="Abraham Lincoln" id="query" name="query" type="text" placeholder="Text keywords (e.g. Anarchism)">
           <div class="btn-group">
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               Quick Search
@@ -54,7 +54,7 @@
 
       function fetchResult(query, callback) {
         $.ajax({
-          url: '/sedna/query.php',
+          url: 'coordinator.php',
           type: 'POST',
           data: { 'query':query },
           dataType: 'text',
@@ -85,19 +85,27 @@
         container.html(summary);
       }
 
-      $('#btn-go').click(function(e) {
+      $('#btn-go').click(searchHandler);
+      fieldQ.on('keyup', function(e) {
+        if (e.keyCode == 13) searchHandler(e);
+      });
+      fieldQ.focus();
+      
+      function searchHandler(e) {
+	resultText.html('...');	
         var query = fieldQ.val().trim();
         if (!query) return;
         fetchResult(query, function(xmlText) {
           resultHanlder(xmlText, resultText);
-          resultText.find('span.label').click(function(i) {
-            var q = $(this).text();
+          resultText.find('span.label').click(function(e) {
+            resultPreview.html('...');
+	    var q = $(this).text();
             fetchResult(q, function(xmlText) {
               resultHanlder(xmlText, resultPreview);
             })
           });
         });
-      });
+      }
 
     });
     </script>

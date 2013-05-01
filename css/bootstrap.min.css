@@ -13,4 +13,5 @@
 #result-text ref { display:none; }
 #result-text template { display:none; }
 #btn-go { margin-bottom:10px; }
-#result-preview { padding-top:57px; }
+#result-preview { padding-top:57px; color:#888; }
+#result-preview span.label { background:#FFF; border-bottom:1px dotted #777; color:#777; font-weight:normal; }
