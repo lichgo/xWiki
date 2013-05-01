@@ -57,22 +57,3 @@ console.log(query);
 		sRes.end('Keywords are needed.')
 	}
 }).listen(8080);
-
-
-
-// var	data = querystring.stringify({
-// 		'query': 'Anarchism'
-// 	});
-
-// var req = http.request(opts, function(res) {
-// 	res.setEncoding('utf-8');
-
-// 	res.on('data', function(data) {
-// 		console.log('The result is shown below:');
-// 		console.log(data);
-// 	})
-// });
-
-// req.write(data);
-
-// req.end();
