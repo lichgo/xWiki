@@ -14,7 +14,7 @@
       </div>
       <div>
         <div class="input-append">
-          <input class="span10" id="query" name="query" type="text">
+          <input class="span10" value="Anarchism" id="query" name="query" type="text" placeholder="Text keywords (e.g. Anarchism)">
           <div class="btn-group">
             <button class="btn dropdown-toggle" data-toggle="dropdown">
               Quick Search
@@ -25,7 +25,7 @@
             </ul>
           </div>
         </div>
-        <button class="btn btn-large btn-primary" id="btn-go">Go</button>
+        <button class="btn btn-medium btn-primary" id="btn-go">Go</button>
       </div>
       <div>
         <div class="container-fluid" id="content-container">
@@ -37,9 +37,9 @@
                 </li>
                 <li><a href="#">XML</a></li>
               </ul>
-              <div id="text-result">Waiting for results...</div>
+              <div id="result-text">...</div>
             </div>
-            <div class="span5">Hint</div>
+            <div class="span5" id="result-preview"></div>
           </div>
         </div>
       </div>
@@ -49,22 +49,56 @@
     <script type="text/javascript">
     $(function() {
       var fieldQ = $('#query'),
-          btnGo = $('#btn-go'),
-          resultText = $('#text-result');
+          resultText = $('#result-text'),
+          resultPreview = $('#result-preview');
 
-      btnGo.click(function(e) {
-        var query = fieldQ.val().trim();
-        if (!query) return;
+      function fetchResult(query, callback) {
         $.ajax({
           url: '/sedna/query.php',
           type: 'POST',
           data: { 'query':query },
           dataType: 'text',
-          success: function(result) {
-            resultText.html(result);
-          }
+          success: callback
         });
-      })
+      }
+
+      function resultHanlder(xmlText, container) {
+        var summary = xmlText.match(/<summary>[\s\S]*<\/summary>/);
+        if (!summary) {
+          container.html('No info.');
+          return;
+        }
+
+        summary = summary[0];
+        summary = summary.replace(/&lt;/g, function(m) {
+          return '<';
+        });
+        summary = summary.replace(/&gt;/g, function(m) {
+          return '>';
+        });
+        summary = summary.replace(/<link/g, function(m) {
+          return '<span class="label label-info"';
+        });
+        summary = summary.replace(/link>/g, function(m) {
+          return 'span>';
+        });
+        container.html(summary);
+      }
+
+      $('#btn-go').click(function(e) {
+        var query = fieldQ.val().trim();
+        if (!query) return;
+        fetchResult(query, function(xmlText) {
+          resultHanlder(xmlText, resultText);
+          resultText.find('span.label').click(function(i) {
+            var q = $(this).text();
+            fetchResult(q, function(xmlText) {
+              resultHanlder(xmlText, resultPreview);
+            })
+          });
+        });
+      });
+
     });
     </script>
   </body>
