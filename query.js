@@ -6,7 +6,8 @@ var http = require('http'),
 		'/sedna/query4.php',
 		'/sedna/query7.php',
 		'/sedna/query10.php',
-		'/sedna/query11.php'
+		'/sedna/query11.php',
+		'/sedna/query15.php'
 	],
 	opts = [];
 
@@ -31,7 +32,7 @@ var server = http.createServer(function(sReq, sRes) {
 			data = querystring.stringify({
 				'query': query
 			});
-console.log(query);
+		console.log(query);
 		//lauch all requests
 		for (var i = 0, len = opts.length; i < len; i++) {
 			var req = http.request(opts[i], (function(i) {

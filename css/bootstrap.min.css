@@ -12,6 +12,9 @@
 #result-text span.label { cursor:pointer; }
 #result-text ref { display:none; }
 #result-text template { display:none; }
+#results { position:relative; }
+#results li div { display:none; position:absolute; padding-top:20px; left:0; width:100%; }
+#results li.active div { display:block; }
 #btn-go { margin-bottom:10px; }
 #result-preview { padding-top:57px; color:#888; }
 #result-preview span.label { background:#FFF; border-bottom:1px dotted #777; color:#777; font-weight:normal; }

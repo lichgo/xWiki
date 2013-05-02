@@ -31,13 +31,18 @@
         <div class="container-fluid" id="content-container">
           <div class="row-fluid">
             <div class="span7">
-              <ul class="nav nav-tabs">
+              <ul class="nav nav-tabs" id="results">
                 <li class="active">
                   <a href="#">Text</a>
+                  <div id="result-text">...</div>
                 </li>
-                <li><a href="#">XML</a></li>
+                <li id="tab-xml">
+                  <a href="#">XML</a>
+                  <div id="result-xml">...</div>
+                </li>
               </ul>
-              <div id="result-text">...</div>
+              
+             
             </div>
             <div class="span5" id="result-preview"></div>
           </div>
@@ -50,7 +55,9 @@
     $(function() {
       var fieldQ = $('#query'),
           resultText = $('#result-text'),
-          resultPreview = $('#result-preview');
+          resultXML = $('#result-xml'),
+          resultPreview = $('#result-preview'),
+          tabs = $('#results > li');
 
       function fetchResult(query, callback) {
         $.ajax({
@@ -84,28 +91,33 @@
         });
         container.html(summary);
       }
-
-      $('#btn-go').click(searchHandler);
-      fieldQ.on('keyup', function(e) {
-        if (e.keyCode == 13) searchHandler(e);
-      });
-      fieldQ.focus();
       
       function searchHandler(e) {
-	resultText.html('...');	
+	      resultText.html('...');	
         var query = fieldQ.val().trim();
         if (!query) return;
         fetchResult(query, function(xmlText) {
           resultHanlder(xmlText, resultText);
+          resultXML.text(xmlText);
           resultText.find('span.label').click(function(e) {
             resultPreview.html('...');
-	    var q = $(this).text();
+	          var q = $(this).text();
             fetchResult(q, function(xmlText) {
               resultHanlder(xmlText, resultPreview);
             })
           });
         });
       }
+
+      $('#btn-go').click(searchHandler);
+      fieldQ.on('keyup', function(e) {
+        if (e.keyCode == 13) searchHandler(e);
+      });
+      fieldQ.focus();
+      tabs.click(function(e) {
+        tabs.removeClass('active');
+        $(this).addClass('active');
+      });
 
     });
     </script>
